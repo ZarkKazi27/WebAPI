@@ -1,17 +1,11 @@
+using APItesting.DepartmentService;
 using APItesting.EmployeeService;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace APItesting
 {
@@ -37,16 +31,23 @@ namespace APItesting
         
 
         public void ConfigureServices(IServiceCollection services)    
-        {    
+        {
+            services.AddControllersWithViews();
+            services.AddSession();
+            
+
             services.AddControllers();
             services.AddSingleton<ITest, Test2>();
-            services.AddDbContextPool<EmployeeContext>(options =>
-                                                       options.UseSqlServer(Configuration["EmployeeDBContextConnectionString"]));
+            services.AddDbContextPool<EmployeeContext>(options => options.UseSqlServer(Configuration["EmployeeDBContextConnectionString"]));
+            services.AddDbContextPool<DepartmentContext>(options => options.UseSqlServer(Configuration["EmployeeDBContextConnectionString"]));
             services.AddScoped<IEmployeeService, EmployeeService.EmployeeService>();
             services.AddSwaggerGen(c =>
             {
 
             });
+
+            services.AddScoped<IDepartmentService, DepartmentService.DepartmentService>();
+
         }   
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
